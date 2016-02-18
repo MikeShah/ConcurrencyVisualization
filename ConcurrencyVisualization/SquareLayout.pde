@@ -5,10 +5,10 @@
 
 class squareLayout extends DataLayer{
   
-   ArrayList<Cell> cells;
+   
   
    public squareLayout(){
-     cells = new ArrayList<Cell>();
+     
    }
    
    
@@ -16,9 +16,7 @@ class squareLayout extends DataLayer{
      
    }
    
-   void addcell(Cell c){
-     cells.add(c);
-   }
+
    
    public void render(){
      
