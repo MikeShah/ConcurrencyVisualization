@@ -5,14 +5,21 @@ public class nodeMetaData{
     // Size
     // A size encoding
     float size;
+    // Children
+    ArrayList<Cell> children;
   
     public nodeMetaData(){
-      
+      children = new ArrayList<Cell>();
     }
     
     public nodeMetaData(String name, float size){
       this.name = name;
       this.size = size;
+       children = new ArrayList<Cell>();
+    }
+    
+    void addChild(Cell c){
+      children.add(c);
     }
   
 }

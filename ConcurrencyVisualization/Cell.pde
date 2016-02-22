@@ -33,6 +33,9 @@ class Cell{
       this.b = b;
     }
     
+    public color getRGB(){
+      return color(r,g,b);
+    }
     
     public void setXYZ(float x, float y, float z){
       this.x = x;
@@ -47,6 +50,12 @@ class Cell{
       this.d = d;
     }
     
+    // Adds a child in the nodeMetaData
+    public void addChildCell(Cell child){
+      metaData.addChild(child);      
+    }
+    
+    // Draw a code city
     public void render(){
        //rect(x,y,w,h);
        pushMatrix();

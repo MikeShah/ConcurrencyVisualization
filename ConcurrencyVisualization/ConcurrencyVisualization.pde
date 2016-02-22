@@ -18,6 +18,7 @@ float cameraSpeed = 20 ;
 
 
 squareLayout sl;
+treeMap tm;
 
 void initGUI(){
   cp5 = new ControlP5(this);
@@ -42,13 +43,16 @@ void setup() {
   
   sl = new squareLayout();
   
+  
   for(int i =0; i < 10000;++i){
      Cell temp = new Cell("test");
      temp.setRGB(random(255),random(255),random(255));
      temp.setWHD(8,random(100),8);
      sl.addcell(temp);
   }
-
+  
+  tm = new treeMap();
+  tm.setCells(sl.getCells());
 }
 
 void draw() {
@@ -59,6 +63,8 @@ void draw() {
     sl.render();
     translate(0,-yCam,0);
   popMatrix();
+  
+  tm.render();
   
   
 }

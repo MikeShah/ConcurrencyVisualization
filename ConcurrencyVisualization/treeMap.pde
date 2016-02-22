@@ -9,7 +9,11 @@ public class treeMap extends DataLayer{
     }
     
     void render(){
-      
+        for (int i =0; i < cells.size(); ++i){
+          fill(cells.get(i).getRGB());
+          rect(i,0,100,100);
+        }
+        
     }
   
 }
