@@ -3,6 +3,7 @@
     Purpose: Single place to inherit data from
 
 */
+import java.util.*;
 
 class DataLayer{
  
@@ -16,10 +17,12 @@ class DataLayer{
      cells.add(c);
    }
    
+   // Get the list of cells and transform them
    ArrayList<Cell> getCells(){
      return cells;
    }
   
+   // Get all of the cells, and set them to a new set
    void setCells(ArrayList<Cell> newCells){
      // Remove our old list of cells
      cells.clear();
@@ -33,6 +36,20 @@ class DataLayer{
    // Traverses all of the cells and their children
    // Performs a breadth-first search
    void traverseCells(){
+       Queue<Cell> bfs = new LinkedList<Cell>();
+       
+       // Populate our Queue with the roots
+       for(int i =0; i < cells.size();++i){
+         bfs.add(cells.get(i));
+       }
+       
+       while(!bfs.isEmpty()){
+          Cell current = bfs.remove();
+          for(int i =0; i < current.metaData.children.size(); ++i){
+             bfs.add(current.metaData.children.get(i));
+          }
+          println(current.metaData.name);
+       }
        
    }
    

@@ -18,8 +18,12 @@ public class nodeMetaData{
        children = new ArrayList<Cell>();
     }
     
-    void addChild(Cell c){
+    public void addChild(Cell c){
       children.add(c);
+    }
+    
+    public ArrayList<Cell> getChildren(){
+      return children;
     }
   
 }

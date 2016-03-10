@@ -44,15 +44,23 @@ void setup() {
   sl = new squareLayout();
   
   
-  for(int i =0; i < 10000;++i){
+  for(int i =0; i < 10;++i){
      Cell temp = new Cell("test");
      temp.setRGB(random(255),random(255),random(255));
      temp.setWHD(8,random(100),8);
+     // Add a random number of children to the temp node
+     int rand = (int)(random(0,5));
+     for(int j =0; j < rand; ++j){
+       Cell temps_child = new Cell("a child");
+       temp.addChildCell(temps_child);
+     }
      sl.addcell(temp);
   }
   
   tm = new treeMap();
   tm.setCells(sl.getCells());
+  
+  sl.traverseCells();
 }
 
 void draw() {
@@ -65,6 +73,7 @@ void draw() {
   popMatrix();
   
   tm.render();
+  
   
   
 }
