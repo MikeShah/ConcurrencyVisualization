@@ -16,8 +16,6 @@ class squareLayout extends DataLayer{
      
    }
    
-
-   
    public void render(){
      
      float x = 0;

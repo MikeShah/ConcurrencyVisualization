@@ -23,6 +23,7 @@ class DataLayer{
    }
   
    // Get all of the cells, and set them to a new set
+   // This is one way to copy all the cells from one visualization to another
    void setCells(ArrayList<Cell> newCells){
      // Remove our old list of cells
      cells.clear();

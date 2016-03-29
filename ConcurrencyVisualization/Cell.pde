@@ -55,8 +55,6 @@ class Cell{
       metaData.addChild(child);      
     }
     
-
-    
     // Draw a code city
     public void render(){
        //rect(x,y,w,h);

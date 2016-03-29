@@ -18,7 +18,7 @@ float cameraSpeed = 20 ;
 
 
 squareLayout sl;
-treeMap tm;
+hilbertCurve hC;
 
 void initGUI(){
   cp5 = new ControlP5(this);
@@ -42,6 +42,7 @@ void setup() {
   myColor = color(192,192,192,192);
   
   sl = new squareLayout();
+  hC = new hilbertCurve();
   
   
   for(int i =0; i < 10;++i){
@@ -57,9 +58,6 @@ void setup() {
      sl.addcell(temp);
   }
   
-  tm = new treeMap();
-  tm.setCells(sl.getCells());
-  
   sl.traverseCells();
 }
 
@@ -72,8 +70,7 @@ void draw() {
     translate(0,-yCam,0);
   popMatrix();
   
-  tm.render();
-  
+  hC.render();
   
   
 }
