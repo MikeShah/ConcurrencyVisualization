@@ -16,11 +16,10 @@ public class hilbertCurve extends DataLayer{
         fill(192);
         stroke(192);
         HilbertPoints=0;
-        hilbert(0, 0, renderWidth, 0, 0, renderHeight, 3);
+        hilbert(0, 0, renderWidth, 0, 0, renderHeight, 4);
         println(HilbertPoints);
         // Detect mouse interaction
         mouseOver();
-        
         renderGrid(0,renderHeight);
     }
     
@@ -37,15 +36,16 @@ public class hilbertCurve extends DataLayer{
         for(int i =0; i < cells.size(); ++i){
             fill(200);
             stroke(255);
-            rect(pixelsInRow, 
+            rect(xOffset+pixelsInRow, 
                  yOffset+rowOffset,
                  cells.get(i).w,
                  cells.get(i).h);
                  
+                 
             pixelsInRow += cellWidth;
             if(pixelsInRow > cellsPerRow*cellWidth){
               pixelsInRow = 0;
-              rowOffset+= cellHeight;
+              rowOffset += cellHeight;
             }
         }
     }
@@ -57,6 +57,14 @@ public class hilbertCurve extends DataLayer{
             fill(192);
             stroke(192);
             rect(cells.get(i).x,cells.get(i).y,cells.get(i).w,cells.get(i).h);
+            if(mousePressed==true){
+              stroke(0,0,128,128);
+              fill(0,0,128,128);
+              rect(mouseX,mouseY-10,cells.get(i).metaData.name.length()*8,20);
+              stroke(255);
+              fill(255);
+              text(cells.get(i).metaData.name,mouseX+20,mouseY);
+            }
         }
       }
    }
