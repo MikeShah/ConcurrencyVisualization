@@ -23,12 +23,14 @@ hilbertCurve hC;
 void initGUI(){
   cp5 = new ControlP5(this);
   
+  /*
   // create a new button with name 'buttonA'
   cp5.addButton("colorA")
      .setValue(0)
      .setPosition(100,20)
      .setSize(200,19)
      ;
+     */
 }
 
 
@@ -64,11 +66,13 @@ void setup() {
 void draw() {
   background(myColor);
   
+  /*
   pushMatrix();
     translate(xCam,yCam,zCam);
     sl.render();
     translate(0,-yCam,0);
   popMatrix();
+  */
   
   hC.render();
   
