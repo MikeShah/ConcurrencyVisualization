@@ -19,6 +19,7 @@ float cameraSpeed = 20 ;
 
 squareLayout sl;
 hilbertCurve hC;
+DetailsPane dp;
 
 void initGUI(){
   cp5 = new ControlP5(this);
@@ -33,10 +34,15 @@ void initGUI(){
      */
 }
 
+void settings(){
+  size(600,600,P3D);
+}
+
 
 // Setup the Processing Sketch
 void setup() {
-  size(600,600,P3D);
+  surface.setTitle("Main View");
+  surface.setLocation(0, 0);
   noStroke();
   // Initialize the GUI
   initGUI();
@@ -45,6 +51,7 @@ void setup() {
   
   sl = new squareLayout();
   hC = new hilbertCurve();
+  dp = new DetailsPane();
   
   
   for(int i =0; i < 10;++i){

@@ -2,10 +2,8 @@
     This class serves as the details window to display other information.
 */
 
-/*
+
 public class DetailsPane extends PApplet {
-  
-  
   
   // Purpose:
   
@@ -48,7 +46,6 @@ public class DetailsPane extends PApplet {
   
   void initGUI(){
       detailsPanel = new ControlP5(this);
-        
   }
   
   public DetailsPane() {
@@ -64,13 +61,13 @@ public class DetailsPane extends PApplet {
   }
 
   public void settings() {
-    size(1440, 320, P3D);
+    size(800, 320, P3D);
     smooth();
   }
   public void setup() { 
     println("setup DetailsPane");
     surface.setTitle("Details View");
-    surface.setLocation(0, 600);
+    surface.setLocation(0, 400);
     frameRate(60);
   }
 
@@ -82,5 +79,3 @@ public class DetailsPane extends PApplet {
 
     
 }
-
-*/

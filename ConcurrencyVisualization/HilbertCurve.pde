@@ -57,6 +57,8 @@ public class hilbertCurve extends DataLayer{
             fill(192);
             stroke(192);
             rect(cells.get(i).x,cells.get(i).y,cells.get(i).w,cells.get(i).h);
+            dp.dataString.setText(cells.get(i).metaData.name);
+
             if(mousePressed==true){
               stroke(0,0,128,128);
               fill(0,0,128,128);
