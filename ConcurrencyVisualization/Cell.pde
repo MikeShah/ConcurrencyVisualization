@@ -20,13 +20,15 @@ class Cell{
     float r,g,b;
     // Actual data
     nodeMetaData metaData;
-  
+    
+    // Default Constructor for the cell
+    // Each cell should have a name by default.
     public Cell(String name){
         metaData = new nodeMetaData();
         this.metaData.name = name;
     }
     
-    
+    // Set the color of the cell
     public void setRGB(float r, float g, float b){
       this.r = r;
       this.g = g;

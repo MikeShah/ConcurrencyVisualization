@@ -12,18 +12,34 @@ public class hilbertCurve extends DataLayer{
         renderWidth = width;
     }
     
+    // Main render function
     void render(){
         fill(192);
         stroke(192);
         HilbertPoints=0;
         hilbert(0, 0, renderWidth, 0, 0, renderHeight, 4);
         println(HilbertPoints);
+        // Render the grid of functions
+        renderGrid(0,renderHeight);
+        //
+        drawCells();
         // Detect mouse interaction
         mouseOver();
-        renderGrid(0,renderHeight);
     }
     
-    // 
+    // Only draw the cells as they have been positioned in the hilbert curve
+    void drawCells(){
+      for(int i =0; i < cells.size(); ++i){
+            fill(cells.get(i).getRGB());
+            stroke(0);
+            rect(cells.get(i).x, 
+                 cells.get(i).y,
+                 cells.get(i).w,
+                 cells.get(i).h);
+        }
+    }
+    
+    // Grid of all of the possible cells in the simulation
     void renderGrid(float xOffset, float yOffset){
         // Pick cell width
         float cellWidth = 8;
@@ -40,7 +56,6 @@ public class hilbertCurve extends DataLayer{
                  yOffset+rowOffset,
                  cells.get(i).w,
                  cells.get(i).h);
-                 
                  
             pixelsInRow += cellWidth;
             if(pixelsInRow > cellsPerRow*cellWidth){
@@ -108,6 +123,7 @@ public class hilbertCurve extends DataLayer{
        Cell c = new Cell("Cell#: "+HilbertPoints);
        c.setXYZ(x1,y1,0);
        c.setWHD(8,8,8);
+       c.setRGB(0,0,0);
        addcell(c);
     }
     else{

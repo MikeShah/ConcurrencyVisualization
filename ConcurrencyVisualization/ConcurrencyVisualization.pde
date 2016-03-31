@@ -20,18 +20,10 @@ float cameraSpeed = 20 ;
 squareLayout sl;
 hilbertCurve hC;
 DetailsPane dp;
+ControlsPanel cp;
 
 void initGUI(){
   cp5 = new ControlP5(this);
-  
-  /*
-  // create a new button with name 'buttonA'
-  cp5.addButton("colorA")
-     .setValue(0)
-     .setPosition(100,20)
-     .setSize(200,19)
-     ;
-     */
 }
 
 void settings(){
@@ -52,7 +44,7 @@ void setup() {
   sl = new squareLayout();
   hC = new hilbertCurve();
   dp = new DetailsPane();
-  
+  cp = new ControlsPanel();
   
   for(int i =0; i < 10;++i){
      Cell temp = new Cell("test");
