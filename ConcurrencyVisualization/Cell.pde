@@ -20,6 +20,8 @@ class Cell{
     float r,g,b;
     // Actual data
     nodeMetaData metaData;
+    // Selected
+    boolean selected = false;
     
     // Default Constructor for the cell
     // Each cell should have a name by default.

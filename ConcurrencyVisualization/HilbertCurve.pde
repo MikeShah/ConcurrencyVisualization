@@ -18,10 +18,10 @@ public class hilbertCurve extends DataLayer{
         stroke(192);
         HilbertPoints=0;
         hilbert(0, 0, renderWidth, 0, 0, renderHeight, 4);
-        println(HilbertPoints);
+        //println(HilbertPoints);
         // Render the grid of functions
         renderGrid(0,renderHeight);
-        //
+        // Render only the cells
         drawCells();
         // Detect mouse interaction
         mouseOver();
@@ -68,22 +68,33 @@ public class hilbertCurve extends DataLayer{
    // Detect if we moused over a cell.
    void mouseOver(){
       for(int i =0; i < cells.size();i++){
+        
+        float yTextOffset = 20; // Need to subtract text from y
+        
         if(dist(mouseX,mouseY,cells.get(i).x,cells.get(i).y) < 8){
-            fill(192);
-            stroke(192);
-            rect(cells.get(i).x,cells.get(i).y,cells.get(i).w,cells.get(i).h);
-            dp.dataString.setText(cells.get(i).metaData.name);
-
-            if(mousePressed==true){
               stroke(0,0,128,128);
               fill(0,0,128,128);
-              rect(mouseX,mouseY-10,cells.get(i).metaData.name.length()*8,20);
+              rect(cells.get(i).x,cells.get(i).y,cells.get(i).metaData.name.length()*8,20);
               stroke(255);
               fill(255);
-              text(cells.get(i).metaData.name,mouseX+20,mouseY);
-            }
+              text(cells.get(i).metaData.name,cells.get(i).x,cells.get(i).y+yTextOffset);
+              dp.dataString.setText(cells.get(i).metaData.name);
+              // Action to take place on mouse-click | Toggle selection
+              if(mousePressed==true){
+                cells.get(i).selected = !cells.get(i).selected;
+              }
         }
-      }
+        
+        // If the cell is selected, then show a pop up
+        if(cells.get(i).selected==true){
+              stroke(0,0,128,128);
+              fill(0,0,128,128);
+              rect(cells.get(i).x,cells.get(i).y,cells.get(i).metaData.name.length()*8,20);
+              stroke(255);
+              fill(255);
+              text(cells.get(i).metaData.name,cells.get(i).x,cells.get(i).y+yTextOffset);
+          }
+        }
    }
  
     float x1,y1,x2=0,y2=0;
