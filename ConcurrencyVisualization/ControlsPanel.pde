@@ -9,6 +9,7 @@ public class ControlsPanel extends PApplet {
   // Our control panel
   ControlP5 widgets;
 
+  public int HilbertCurveValue = 4;
   
   //    Build the GUI for the Details Pane
   
@@ -21,6 +22,15 @@ public class ControlsPanel extends PApplet {
          .setValue(0)
          .setPosition(0,0)
          .setSize(200,19)
+         ;
+         
+      // add a horizontal sliders, the value of this slider will be linked
+      // to variable 'sliderValue' 
+      widgets.addSlider("HilbertCurveValue")
+         .setPosition(5,20)
+         .setRange(1,11)
+         .setValue(4)
+         .setNumberOfTickMarks(10)
          ;
   }
   

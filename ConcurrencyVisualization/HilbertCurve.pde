@@ -17,7 +17,7 @@ public class hilbertCurve extends DataLayer{
         fill(192);
         stroke(192);
         HilbertPoints=0;
-        hilbert(0, 0, renderWidth, 0, 0, renderHeight, 4);
+        hilbert(0, 0, renderWidth, 0, 0, renderHeight, cp.HilbertCurveValue);
         //println(HilbertPoints);
         // Render the grid of functions
         renderGrid(0,renderHeight);
@@ -101,49 +101,45 @@ public class hilbertCurve extends DataLayer{
     boolean firstRun = true;
     
     int HilbertPoints = 0;
-    
+
     void hilbert(float x, float y, float xi, float xj, float yi, float yj, int  n) {
-    // x0 and y0 are the coordinates of the bottom left corner
-    // xis & xjs are the i & j components of the unit x vector this frame
-    // similarly yis and yjs
-    if (n <= 0){
-       // LineTo(x + (xi + yi)/2, y + (xj + yj)/2);
-       // line(x1,y1,x2,y2);
-       if(firstRun){
-         x1 = x + (xi + yi)/2;
-         y1 = y + (xj + yj)/2;
-         x2 = x + (xi + yi)/2;
-         y2 = y + (xj + yj)/2;     
-         firstRun = false;
-       }
-       else{
-         x1 = x2;
-         y1 = y2;
-         x2 = x + (xi + yi)/2;
-         y2 = y + (xj + yj)/2;
-       }
-    
-       stroke(0,255,0);
-       fill(0,255,0);
-       line(x1,y1,x2,y2);
-       stroke(255,0,0);
-       fill(255,0,0);
-       rect(x1,y1,4,4);
-       rect(x2,y2,4,4);
-       HilbertPoints++;
-       Cell c = new Cell("Cell#: "+HilbertPoints);
-       c.setXYZ(x1,y1,0);
-       c.setWHD(8,8,8);
-       c.setRGB(0,0,0);
-       addcell(c);
-    }
-    else{
-       hilbert(x,           y,           yi/2, yj/2,  xi/2,  xj/2, n-1);
-       hilbert(x+xi/2,      y+xj/2 ,     xi/2, xj/2,  yi/2,  yj/2, n-1);
-       hilbert(x+xi/2+yi/2, y+xj/2+yj/2, xi/2, xj/2,  yi/2,  yj/2, n-1);
-       hilbert(x+xi/2+yi,   y+xj/2+yj,  -yi/2,-yj/2, -xi/2, -xj/2, n-1);
-       }
-     //  println("running this code");
+          // x0 and y0 are the coordinates of the bottom left corner
+          // xis & xjs are the i & j components of the unit x vector this frame
+          // similarly yis and yjs
+          if (n <= 0){
+             // LineTo(x + (xi + yi)/2, y + (xj + yj)/2);
+             // line(x1,y1,x2,y2);
+             if(firstRun){
+               x1 = x + (xi + yi)/2;
+               y1 = y + (xj + yj)/2;
+               x2 = x + (xi + yi)/2;
+               y2 = y + (xj + yj)/2;     
+               firstRun = false;
+             }
+             else{
+               x1 = x2;
+               y1 = y2;
+               x2 = x + (xi + yi)/2;
+               y2 = y + (xj + yj)/2;
+             }
+          
+             // Line connecting point
+             fill(0,255,0); stroke(0,255,0);
+             line(x1,y1,x2,y2);
+             // Rectangle on the line
+             HilbertPoints++;
+             Cell c = new Cell("Cell#: "+HilbertPoints);
+             c.setXYZ(x1,y1,0);
+             c.setWHD(8,8,8);
+             c.setRGB(random(255),random(255),random(255));
+             addcell(c);
+          }
+          else{
+             hilbert(x,           y,           yi/2, yj/2,  xi/2,  xj/2, n-1);
+             hilbert(x+xi/2,      y+xj/2 ,     xi/2, xj/2,  yi/2,  yj/2, n-1);
+             hilbert(x+xi/2+yi/2, y+xj/2+yj/2, xi/2, xj/2,  yi/2,  yj/2, n-1);
+             hilbert(x+xi/2+yi,   y+xj/2+yj,  -yi/2,-yj/2, -xi/2, -xj/2, n-1);
+          }
     }
     
 }

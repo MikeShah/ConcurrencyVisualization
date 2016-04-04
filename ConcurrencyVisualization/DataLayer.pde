@@ -7,6 +7,7 @@ import java.util.*;
 
 class DataLayer{
  
+   
    ArrayList<Cell> cells;
   
    public DataLayer(){
