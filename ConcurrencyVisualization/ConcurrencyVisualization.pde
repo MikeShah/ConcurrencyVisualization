@@ -23,6 +23,7 @@ squareLayout sl;
 hilbertCurve hC;
 DetailsPane dp;
 ControlsPanel cp;
+FunctionsPanel fp;
 
 void initGUI(){
   cp5 = new ControlP5(this);
@@ -47,6 +48,7 @@ void setup() {
   hC = new hilbertCurve();
   dp = new DetailsPane();
   cp = new ControlsPanel();
+  fp = new FunctionsPanel();
   
   for(int i =0; i < 10;++i){
      Cell temp = new Cell("test");
