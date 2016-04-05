@@ -5,10 +5,14 @@
 */
 import java.util.*;
 
+
+
 class DataLayer{
  
    
    ArrayList<Cell> cells;
+   
+   ArrayList<Functions> functionsList;
   
    public DataLayer(){
       cells = new ArrayList<Cell>();
