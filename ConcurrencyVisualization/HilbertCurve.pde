@@ -14,7 +14,7 @@ public class hilbertCurve extends DataLayer{
         renderWidth = width;
         // Load a call tree into our hilbert curve
         myCallTree = new CallTree();
-        myCallTree.load("/Users/michaelshah/Desktop/Snapshots/ProcessingCallTree.csv");
+        myCallTree.load("/Users/michaelshah/Desktop/Snapshots/JVisualVM.csv");
         myCallTree.printTree();
       }
     
@@ -137,7 +137,8 @@ public class hilbertCurve extends DataLayer{
              Cell c = new Cell("Cell#: "+HilbertPoints);
              c.setXYZ(x1,y1,0);
              c.setWHD(8,8,8);
-             c.setRGB(random(255),random(255),random(255));
+//             c.setRGB(random(255),random(255),random(255));
+             c.setRGB(255,0,0);
              addcell(c);
           }
           else{
