@@ -7,10 +7,16 @@ public class hilbertCurve extends DataLayer{
     float renderHeight = 0;
     float renderWidth = 0;
     
+    CallTree myCallTree;
+    
     public hilbertCurve(){
         renderHeight = height - 200;
         renderWidth = width;
-    }
+        // Load a call tree into our hilbert curve
+        myCallTree = new CallTree();
+        myCallTree.load("/Users/michaelshah/Desktop/Snapshots/ProcessingCallTree.csv");
+        myCallTree.printTree();
+      }
     
     // Main render function
     void render(){
