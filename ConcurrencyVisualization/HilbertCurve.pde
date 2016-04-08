@@ -108,6 +108,7 @@ public class hilbertCurve extends DataLayer{
     
     int HilbertPoints = 0;
 
+//       hilbert(      0,       0, renderWidth,     0,        0, renderHeight, cp.HilbertCurveValue);
     void hilbert(float x, float y, float xi, float xj, float yi, float yj, int  n) {
           // x0 and y0 are the coordinates of the bottom left corner
           // xis & xjs are the i & j components of the unit x vector this frame
