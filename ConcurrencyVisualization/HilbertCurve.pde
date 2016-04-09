@@ -9,21 +9,53 @@ public class hilbertCurve extends DataLayer{
     
     CallTree myCallTree;
     
+    Vector c[]; 
+    int curveAnimation = 0; 
+
+    
     public hilbertCurve(){
         renderHeight = height - 200;
         renderWidth = width;
+
         // Load a call tree into our hilbert curve
         myCallTree = new CallTree();
         myCallTree.load("/Users/michaelshah/Desktop/Snapshots/JVisualVM.csv");
         myCallTree.printTree();
-      }
+
+        c = hilbert(  new Vector(renderWidth, renderHeight, 0) , 300.0,    cp.HilbertCurveValue,      0, 1, 2, 3); // hilbert(center, side-length, recursion depth, start-indices)
+
+    }
     
     // Main render function
     void render(){
         fill(192);
         stroke(192);
         HilbertPoints=0;
-        hilbert(0, 0, renderWidth, 0, 0, renderHeight, cp.HilbertCurveValue);
+
+      noStroke(); fill(255, 10);
+      rect(0,0, renderWidth, renderHeight);
+      for(int i = 0; i < c.length-1; i++){
+        // Draw the lines of the actual hilbert curve
+        stroke(255); line(c[i].x, c[i].y, c[i+1].x, c[i+1].y);
+        // Plot points along the curve
+        int rectSize = 3; // How big are the points
+        // Compute and figure out where points can be plotted
+        float lineLength = max(abs(c[i].x - c[i+1].x),abs(c[i].y - c[i+1].y));
+        println(lineLength);
+        for(int j=0; j < lineLength/rectSize; ++j){
+          stroke(255,0,0);
+          rect(c[i].x+j*lineLength,c[i].y+j*lineLength,rectSize,rectSize);
+        }
+      }
+        
+        if(curveAnimation < c.length-1){
+          stroke(0,255,0);
+          rect(c[curveAnimation].x,c[curveAnimation].y,5,5);
+          curveAnimation++;
+        }else{
+          curveAnimation = 0;
+        }
+              
         //println(HilbertPoints);
         // Render the grid of functions
         renderGrid(0,renderHeight);
@@ -107,47 +139,48 @@ public class hilbertCurve extends DataLayer{
     boolean firstRun = true;
     
     int HilbertPoints = 0;
+    
 
-//       hilbert(      0,       0, renderWidth,     0,        0, renderHeight, cp.HilbertCurveValue);
-    void hilbert(float x, float y, float xi, float xj, float yi, float yj, int  n) {
-          // x0 and y0 are the coordinates of the bottom left corner
-          // xis & xjs are the i & j components of the unit x vector this frame
-          // similarly yis and yjs
-          if (n <= 0){
-             // LineTo(x + (xi + yi)/2, y + (xj + yj)/2);
-             // line(x1,y1,x2,y2);
-             if(firstRun){
-               x1 = x + (xi + yi)/2;
-               y1 = y + (xj + yj)/2;
-               x2 = x + (xi + yi)/2;
-               y2 = y + (xj + yj)/2;     
-               firstRun = false;
-             }
-             else{
-               x1 = x2;
-               y1 = y2;
-               x2 = x + (xi + yi)/2;
-               y2 = y + (xj + yj)/2;
-             }
-          
-             // Line connecting point
-             fill(0,255,0); stroke(0,255,0);
-             line(x1,y1,x2,y2);
-             // Rectangle on the line
-             HilbertPoints++;
-             Cell c = new Cell("Cell#: "+HilbertPoints);
-             c.setXYZ(x1,y1,0);
-             c.setWHD(8,8,8);
-//             c.setRGB(random(255),random(255),random(255));
-             c.setRGB(255,0,0);
-             addcell(c);
-          }
-          else{
-             hilbert(x,           y,           yi/2, yj/2,  xi/2,  xj/2, n-1);
-             hilbert(x+xi/2,      y+xj/2 ,     xi/2, xj/2,  yi/2,  yj/2, n-1);
-             hilbert(x+xi/2+yi/2, y+xj/2+yj/2, xi/2, xj/2,  yi/2,  yj/2, n-1);
-             hilbert(x+xi/2+yi,   y+xj/2+yj,  -yi/2,-yj/2, -xi/2, -xj/2, n-1);
-          }
-    }
+// Used to store the points in a Hilbert curve
+// and make a vector
+class Vector{
+  float x, y, z;
+  Vector( float x, float y, float  z){
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+}
+ 
+int counter= 0;
+ 
+Vector[] hilbert( Vector c_,  float side,   int iterations,      int index_a, int index_b, int index_c, int index_d ){
+  Vector c[] = new Vector[4];
+  c[index_a] = new Vector(  c_.x - side/2,   c_.y - side/2, 0  );
+  c[index_b] = new Vector(  c_.x + side/2,   c_.y - side/2, 0  );
+  c[index_c] = new Vector(  c_.x + side/2,   c_.y + side/2, 0  );
+  c[index_d] = new Vector(  c_.x - side/2,   c_.y + side/2, 0  );
+ 
+  if( --iterations >= 0) {
+    Vector tmp[] = new Vector[0];
+    
+    tmp = (Vector[]) concat(tmp, hilbert ( c[0],  side/2,   iterations,    index_a, index_d, index_c, index_b  ));
+    tmp = (Vector[]) concat(tmp, hilbert ( c[1],  side/2,   iterations,    index_a, index_b, index_c, index_d  ));
+    tmp = (Vector[]) concat(tmp, hilbert ( c[2],  side/2,   iterations,    index_a, index_b, index_c, index_d  ));
+    tmp = (Vector[]) concat(tmp, hilbert ( c[3],  side/2,   iterations,    index_c, index_b, index_a, index_d  ));
+    return tmp;
+  }
+  
+  HilbertPoints++;
+   Cell _cell = new Cell("Cell#: "+HilbertPoints);
+   _cell.setXYZ(x1,y1,0);
+   _cell.setWHD(8,8,8);
+  //             c.setRGB(random(255),random(255),random(255));
+   _cell.setRGB(255,0,0);
+   addcell(_cell);
+             
+  return c;
+}
+
     
 }
