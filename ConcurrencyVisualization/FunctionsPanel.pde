@@ -17,7 +17,7 @@ public class FunctionsPanel extends PApplet {
 
       myListBox = widgets.addListBox("Functions Called")
          .setPosition(0 ,0)
-         .setSize(200, 240)
+         .setSize(200, height)
          .setItemHeight(15)
          .setBarHeight(15)
          .setColorBackground(color(255, 128))
@@ -25,11 +25,11 @@ public class FunctionsPanel extends PApplet {
          .setColorForeground(color(255, 100,0))
          ;
          
-      for (int i=0;i<80;i++) {
-        myListBox.addItem("item "+i, i);
-        myListBox.getItem("item "+i).put("color", new CColor().setBackground(0xffff0000).setBackground(0xffff8800));
-      }
-
+  }
+  
+  void addListItem(String itemName){
+        myListBox.addItem(itemName, 0);
+        myListBox.getItem(itemName).put("color", new CColor().setBackground(0xffff0000).setBackground(0xffff8800));
   }
   
   public FunctionsPanel() {
@@ -46,7 +46,7 @@ public class FunctionsPanel extends PApplet {
   public void setup() { 
     println("setup Functions Panel");
     surface.setTitle("Functions Panel");
-    surface.setLocation(800, 0);
+    surface.setLocation(1000, 0);
     frameRate(60);
   }
 

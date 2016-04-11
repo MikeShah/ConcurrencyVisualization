@@ -9,12 +9,23 @@ public class hilbertCurve extends DataLayer{
     
     CallTree myCallTree;
     
+    // Store the points in the hilbert curve    
     Vector c[]; 
-    int curveAnimation = 0; 
 
+    // Move a point along a line in the hilbert curve
+    // one pixel at a time. Reset these values when destination is met.
+    int[] curveAnimation;   int animationLength = 5;
+    float[] xAnimationOffset;
+    float[] yAnimationOffset;    
+    
+    int lineColorAnimation = 0; 
+    
+    // Which is the last cell that the user clicked on.
+    int lastSelectedCell = 0;
+    
     
     public hilbertCurve(){
-        renderHeight = height - 200;
+        renderHeight = height;
         renderWidth = width;
 
         // Load a call tree into our hilbert curve
@@ -22,47 +33,129 @@ public class hilbertCurve extends DataLayer{
         myCallTree.load("/Users/michaelshah/Desktop/Snapshots/JVisualVM.csv");
         myCallTree.printTree();
 
-        c = hilbert(  new Vector(renderWidth, renderHeight, 0) , 300.0,    cp.HilbertCurveValue,      0, 1, 2, 3); // hilbert(center, side-length, recursion depth, start-indices)
+        c = hilbert(new Vector(renderWidth/2, renderHeight/2, 0) , 300.0,    cp.HilbertCurveValue, 0, 1, 2, 3); // hilbert(center, side-length, recursion depth, start-indices)
 
+        curveAnimation = new int[animationLength];
+        xAnimationOffset = new float[animationLength];
+        yAnimationOffset = new float[animationLength];
     }
     
+    
+
     // Main render function
     void render(){
         fill(192);
         stroke(192);
-        HilbertPoints=0;
 
-      noStroke(); fill(255, 10);
-      rect(0,0, renderWidth, renderHeight);
-      for(int i = 0; i < c.length-1; i++){
-        // Draw the lines of the actual hilbert curve
-        stroke(255); line(c[i].x, c[i].y, c[i+1].x, c[i+1].y);
-        // Plot points along the curve
-        int rectSize = 3; // How big are the points
-        // Compute and figure out where points can be plotted
-        float lineLength = max(abs(c[i].x - c[i+1].x),abs(c[i].y - c[i+1].y));
-        println(lineLength);
-        for(int j=0; j < lineLength/rectSize; ++j){
-          stroke(255,0,0);
-          rect(c[i].x+j*lineLength,c[i].y+j*lineLength,rectSize,rectSize);
+        noStroke(); fill(255, 10);
+        rect(0,0, renderWidth, renderHeight);
+        for(int i = 0; i < c.length-1; i++){
+          // Draw the lines of the actual hilbert curve
+          stroke(255); line(c[i].x, c[i].y, c[i+1].x, c[i+1].y);
+          // Plot points along the curve
+          int rectSize = 3; // How big are the points
+          // Compute and figure out where points can be plotted
+          float lineLength = max(abs(c[i].x - c[i+1].x),abs(c[i].y - c[i+1].y));
+//          println("Line Length: "+lineLength);
+          for(int j=0; j < lineLength/rectSize; ++j){
+            stroke(255,0,0);
+            //rect(c[i].x+j*lineLength,c[i].y+j*lineLength,rectSize,rectSize);
+          }
         }
-      }
         
-        if(curveAnimation < c.length-1){
-          stroke(0,255,0);
-          rect(c[curveAnimation].x,c[curveAnimation].y,5,5);
-          curveAnimation++;
-        }else{
-          curveAnimation = 0;
-        }
-              
+        // line animation()
+        lineAnimation();
+        
+        // For an animation
+        movePointOnCurve(1);
+
+
         //println(HilbertPoints);
         // Render the grid of functions
-        renderGrid(0,renderHeight);
+        renderGrid(0,renderHeight,8);
         // Render only the cells
         drawCells();
+        // Highlight where we click
+        highlight();
         // Detect mouse interaction
         mouseOver();
+    }
+    
+    int colorFade = 120;
+    
+    // Simply 
+    void lineAnimation(){
+      if (lineColorAnimation < c.length-1){
+        // Draw the lines of the actual hilbert curve
+        stroke(0,colorFade,0); line(c[lineColorAnimation].x, c[lineColorAnimation].y, c[lineColorAnimation+1].x,c[lineColorAnimation+1].y);
+      }else{
+        lineColorAnimation=0;
+      }
+      
+      colorFade++;
+      if(colorFade>255){
+        lineColorAnimation++;
+        colorFade=120;
+      }
+    }
+    
+    // Highlights all of the hilbert curve up until the
+    // line that we select
+    void highlight(){
+      
+      float incrementColor = 255;
+      if (lastSelectedCell >0){
+        incrementColor = 255.0 / ((float)(lastSelectedCell*4));
+      }
+
+      for(int i =0; i < lastSelectedCell*4; ++i){
+        if(i<c.length){
+          stroke(0,0,(float)i*incrementColor); line(c[i].x, c[i].y, c[i+1].x,c[i+1].y);
+        }
+      }
+    }
+    
+    // Move a rectangle along a curve
+    void movePointOnCurve(int speed){
+          for(int i = 0; i < animationLength; ++i){
+                // Move a rectangle along a curve
+                if(curveAnimation[i] < c.length-1){
+                      stroke(0,192,0);
+                      fill(0,255,0);
+                      ellipse(c[curveAnimation[i]].x+xAnimationOffset[i],c[curveAnimation[i]].y+yAnimationOffset[i],12,12);
+                      
+                      int start_x =  (int)c[curveAnimation[i]].x;
+                      int start_y =  (int)c[curveAnimation[i]].y;
+                      int target_x = (int)c[curveAnimation[i]+1].x;
+                      int target_y = (int)c[curveAnimation[i]+1].y;
+
+//                    println("("+start_x+","+start_y+")=>("+target_x+","+target_y+")");
+                                      
+                      // If the x's are the same, then we increment along the y
+                      if(start_x==target_x){
+                        if(start_y>target_y){
+                          yAnimationOffset[i]-=speed;
+                        }else{
+                          yAnimationOffset[i]+=speed;
+                        }
+                      }
+                      else{
+                        if(start_x>target_x){
+                          xAnimationOffset[i]-=speed;
+                        }else{
+                          xAnimationOffset[i]+=speed;
+                        }
+                      }
+                      if(dist(start_x+xAnimationOffset[i],start_y+yAnimationOffset[i],target_x,target_y)<2){
+                          curveAnimation[i]++; 
+                          xAnimationOffset[i] = 0;
+                          yAnimationOffset[i] = 0;
+                      }
+                      
+                }else{
+                      curveAnimation[i] = 0;
+                }
+          }
     }
     
     // Only draw the cells as they have been positioned in the hilbert curve
@@ -78,10 +171,10 @@ public class hilbertCurve extends DataLayer{
     }
     
     // Grid of all of the possible cells in the simulation
-    void renderGrid(float xOffset, float yOffset){
+    void renderGrid(float xOffset, float yOffset,float rectAngleSize){
         // Pick cell width
-        float cellWidth = 8;
-        float cellHeight = 8;
+        float cellWidth = rectAngleSize;
+        float cellHeight = rectAngleSize;
         // Make the grid
         float cellsPerRow = width / cellWidth;
         float pixelsInRow = 0;
@@ -121,6 +214,7 @@ public class hilbertCurve extends DataLayer{
               if(mousePressed==true){
                 cells.get(i).selected = !cells.get(i).selected;
               }
+              lastSelectedCell = i;
         }
         
         // If the cell is selected, then show a pop up
@@ -134,11 +228,6 @@ public class hilbertCurve extends DataLayer{
           }
         }
    }
- 
-    float x1,y1,x2=0,y2=0;
-    boolean firstRun = true;
-    
-    int HilbertPoints = 0;
     
 
 // Used to store the points in a Hilbert curve
@@ -154,6 +243,7 @@ class Vector{
  
 int counter= 0;
  
+// Function that draws a hilbert curve by storing all of the points from which to draw lines to and from.
 Vector[] hilbert( Vector c_,  float side,   int iterations,      int index_a, int index_b, int index_c, int index_d ){
   Vector c[] = new Vector[4];
   c[index_a] = new Vector(  c_.x - side/2,   c_.y - side/2, 0  );
@@ -171,10 +261,11 @@ Vector[] hilbert( Vector c_,  float side,   int iterations,      int index_a, in
     return tmp;
   }
   
-  HilbertPoints++;
-   Cell _cell = new Cell("Cell#: "+HilbertPoints);
-   _cell.setXYZ(x1,y1,0);
-   _cell.setWHD(8,8,8);
+  // Everytime we plot a point on the hilbert curve, also draw a cell.
+   counter++;
+   Cell _cell = new Cell("Cell#: "+counter);
+   _cell.setXYZ(c_.x - side/2,   c_.y - side/2, 0);
+   _cell.setWHD(4,4,4);
   //             c.setRGB(random(255),random(255),random(255));
    _cell.setRGB(255,0,0);
    addcell(_cell);

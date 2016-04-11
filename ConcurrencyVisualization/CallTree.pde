@@ -8,6 +8,7 @@ class CallTreeNode{
     String m_method;
     String m_totalTime;
     int Invocations;
+    CallTreeNode parent;
     
     int level; // Level the node is at in the tree, such that we can pretty print it
     
@@ -15,6 +16,7 @@ class CallTreeNode{
     ArrayList<CallTreeNode> children;
 
     public void init(){
+            parent = null;
             children = new ArrayList<CallTreeNode>();
             
             level = 0;
@@ -33,6 +35,8 @@ class CallTreeNode{
     public void addChild(CallTreeNode c){
        children.add(c);
     }
+    
+    
     
 }
 
@@ -94,10 +98,7 @@ class CallTree{
      // By default, put our root node on top
      walker.push(root);
      
-     int indentedLineLength = -1;
-     int top_of_stack_indentation = -1;
-     
-     
+     // Read all of the nodes
      for (int i = 0 ; i < lines.length; i++) {
         // (1) Print out the line that we read in from the file 
         //     We also create a node for it.
@@ -105,58 +106,71 @@ class CallTree{
         println(line);
         
         CallTreeNode c = new CallTreeNode(lines[i].substring(1));
+        // set the level of the node
+        c.level = indendation(line);
 
         // (2) If walker is empty, then simply add in the first node read.
-        //     If the stack is not empty, then we can see if the node is a child, and start building our tree structure
+        //     If the stack is not empty, then:
+        //         (a) If indentation is greater, than it is a child of the top of the stack
+        //         (b) If indentation is equal, then point child to last nodes parent and go ahead and push on stack
+        //         (c) If indentation is less, then pop stack until indentation is equal to top of stacks node, and then point to that nodes parent (because they share the same parent)
         if(walker.isEmpty()){
                 walker.push(c);
         }else{
                 // Temp add everything as a child
-                if(indendation(line) > indendation(walker.peek().m_method)){
+                if(c.level > walker.peek().level){
+                  c.parent = walker.peek();
                   walker.peek().addChild(c);
-
                   walker.push(c);
                 }
-                else{// if(indendation(line) >= indendation(walker.peek().m_method)){
+                else if(c.level == walker.peek().level){
+                  c.parent = walker.peek().parent;
+                  walker.push(c);
+                }
+                else{
+                  while(c.level < walker.peek().level){
+                    //walker.pop();
+                  }
+                  if(c.level == walker.peek().level){
+                    c.parent = walker.peek().parent;
+                    walker.push(c);
+                  }
+                  else{
+                    c.parent = walker.peek().parent;
+                    walker.peek().addChild(c);
+                    walker.push(c);
+                  }
                 }
         }
+     } // for (int i = 0 ; i < lines.length; i++) {
 
-        
-/*
-        // Add as a child to the current node at the top of the stack.
-        if(indentedLineLength > top_of_stack_indentation){
-          walker.push(c);
-        }
-        //}else if(indentedLineLength == top_of_stack_indentation){
-          // Add to the top of stack as well
-          //walker.peek().addChild(c);
-        //}
-        else{ //if (indentation(lines[i].length < last_indentation){ // Just adding in comment to show that this is the 'less than' case
-           
-           //while indendation of top guy is less than current node
-           //      then pop top of stack and make a child of the new top
-           //      if indentation of top is equal to the last one, then push onto stack
-           
-           while(indendation(walker.peek().m_method.substring(1)) > indentedLineLength){
-             CallTreeNode topNode = walker.pop();
-             walker.peek().addChild(topNode);
-           }
-          
-           
-           
-           walker.push(c);
-        }
-        
-*/        
-     }
-  
      printTree();
      
    }
    
    // Print call Tree
    // Bread-first traversal to recreate the call tree
-   public void printTree(){
+   public void printTree(){     
+       Queue<CallTreeNode> bfs = new LinkedList<CallTreeNode>();
+       bfs.add(root);
+       while(!bfs.isEmpty()){
+         // Remove the first node of our queue
+         CallTreeNode top = bfs.remove();
+         // Print out the node we removed
+         println(top.level+":"+top.m_method+" children="+top.children.size());         
+         // Add all of the children
+         for(int i=0; i < top.children.size();++i){
+           top.children.get(i).level = top.level+1;  // All child nodes are located one below from their parent
+           bfs.add(top.children.get(i));
+         }
+       }
+   }
+   
+   // Bread-first traversal to recreate the call tree
+   // Returns the tree in a linear list.
+   public ArrayList<String> getLinearTree(){
+       ArrayList<String> nodeNames = new ArrayList<String>();
+     
        Queue<CallTreeNode> bfs = new LinkedList<CallTreeNode>();
        bfs.add(root);
        while(!bfs.isEmpty()){
@@ -164,12 +178,16 @@ class CallTree{
          CallTreeNode top = bfs.remove();
          // Print out the node we removed
          println(top.level+":"+top.m_method);
+         nodeNames.add(top.m_method);
+         
          // Add all of the children
          for(int i=0; i < top.children.size();++i){
            top.children.get(i).level = top.level+1;  // All child nodes are located one below from their parent
            bfs.add(top.children.get(i));
          }
        }
+       
+       return nodeNames;
    }
    
 }

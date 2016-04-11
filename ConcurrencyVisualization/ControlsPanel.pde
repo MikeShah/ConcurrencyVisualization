@@ -15,7 +15,6 @@ public class ControlsPanel extends PApplet {
   
   void initGUI(){
       widgets = new ControlP5(this);
-      
 
       // create a new button with name 'buttonA'
       widgets.addButton("buttonA")
@@ -43,17 +42,19 @@ public class ControlsPanel extends PApplet {
 
   public void settings() {
     size(200, 320, P3D);
-    smooth();
   }
   public void setup() { 
+    smooth();
     println("setup Controls Panel");
     surface.setTitle("Controls Panel");
-    surface.setLocation(600, 0);
+    surface.setLocation(800, 0);
     frameRate(60);
   }
 
   public void draw() {
-    background(145,160,176);
+    if(widgets!=null){
+      background(145,160,176);
+    }
   }
   
   void buttonA(){
