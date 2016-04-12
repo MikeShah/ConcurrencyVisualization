@@ -4,18 +4,18 @@
 
 */
 import java.util.*;
-
+import java.util.concurrent.*;
 
 
 class DataLayer{
  
-   
-   ArrayList<Cell> cells;
+   // This needs to be thread-safe, because we clear the cells and also render them at the same time.
+   CopyOnWriteArrayList<Cell> cells;
    
    ArrayList<Functions> functionsList;
   
    public DataLayer(){
-      cells = new ArrayList<Cell>();
+      cells = new CopyOnWriteArrayList<Cell>();
    }
   
    void addcell(Cell c){
@@ -23,7 +23,7 @@ class DataLayer{
    }
    
    // Get the list of cells and transform them
-   ArrayList<Cell> getCells(){
+   CopyOnWriteArrayList<Cell> getCells(){
      return cells;
    }
   

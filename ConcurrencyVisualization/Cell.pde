@@ -22,6 +22,8 @@ class Cell{
     nodeMetaData metaData;
     // Selected
     boolean selected = false;
+    // Call tree node
+    int myCallTreeIndex = -1;  // The index of the cell in the linearized call tree.
     
     // Default Constructor for the cell
     // Each cell should have a name by default.

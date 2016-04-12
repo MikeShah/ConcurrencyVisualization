@@ -35,9 +35,9 @@ void setup() {
   hC = new hilbertCurve();
   fp = new FunctionsPanel();
   
-  ArrayList<String> methodList = hC.myCallTree.getLinearTree();
+  ArrayList<CallTreeNode> methodList = hC.myCallTree.getLinearTree();
   for(int i =0; i < methodList.size();++i){
-    fp.addListItem(methodList.get(i).trim());
+    fp.addListItem(methodList.get(i).m_method.trim());
     
   }
   

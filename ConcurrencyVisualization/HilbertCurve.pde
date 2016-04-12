@@ -7,7 +7,8 @@ public class hilbertCurve extends DataLayer{
     float renderHeight = 0;
     float renderWidth = 0;
     
-    CallTree myCallTree;
+    CallTree myCallTree;                    // Actual tree representation 
+    ArrayList<CallTreeNode> LinearCallTree; // A flattened tree that can be mapped to the Hilbert Curve (essentially bfs tree, then sorted by time)
     
     // Store the points in the hilbert curve    
     Vector c[]; 
@@ -34,6 +35,8 @@ public class hilbertCurve extends DataLayer{
         myCallTree.printTree();
 
         c = hilbert(new Vector(renderWidth/2, renderHeight/2, 0) , 300.0,    cp.HilbertCurveValue, 0, 1, 2, 3); // hilbert(center, side-length, recursion depth, start-indices)
+
+        mapCellsToTree();
 
         curveAnimation = new int[animationLength];
         xAnimationOffset = new float[animationLength];
@@ -178,6 +181,22 @@ public class hilbertCurve extends DataLayer{
         }
     }
     
+    // Important function that maps Cells to the tree
+    // Each cell can have exactly one tree node.
+    void mapCellsToTree(){
+        
+        // Get a linear tree
+        LinearCallTree = myCallTree.getLinearTree();
+      
+        /*
+        for(int i = 0; i < LinearCallTree.size(); ++i){
+          if(i < LinearCallTree.size()){
+            cells.get(i).myCallTreeIndex = LinearCallTree.get(i);
+          }
+        }
+        */
+    }
+    
     // Grid of all of the possible cells in the simulation
     void renderGrid(float xOffset, float yOffset,float rectAngleSize){
         // Pick cell width
@@ -203,6 +222,7 @@ public class hilbertCurve extends DataLayer{
             }
         }
     }
+    
  
    // Detect if we moused over a cell.
    void mouseOver(){
@@ -217,7 +237,23 @@ public class hilbertCurve extends DataLayer{
               stroke(255);
               fill(255);
               text(cells.get(i).metaData.name,cells.get(i).x,cells.get(i).y+yTextOffset);
-              dp.dataString.setText(cells.get(i).metaData.name);
+              
+              if(i<LinearCallTree.size()){
+                dp.dataString.setText(LinearCallTree.get(i).printNode());
+              }
+              
+              
+                // Highlight all other similar cells of the current cell that has been selected.
+                for(int j =0; j < cells.size();++j){
+                    if(j< LinearCallTree.size() && i < LinearCallTree.size()){
+                        if (LinearCallTree.get(i).m_method.equals(LinearCallTree.get(j).m_method)){
+                            ellipse(cells.get(j).x,cells.get(j).y,15,15);
+                        }
+                    }
+                }
+              
+              
+              
               // Action to take place on mouse-click | Toggle selection
               if(mousePressed==true){
                 cells.get(i).selected = !cells.get(i).selected;

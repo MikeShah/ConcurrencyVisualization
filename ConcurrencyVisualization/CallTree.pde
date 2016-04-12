@@ -5,7 +5,7 @@
 */
 
 class CallTreeNode{
-    String m_method;
+    String m_method;  // Name of the method. TODO: Change this to 'm_methodName'
     String m_totalTime;
     int Invocations;
     CallTreeNode parent;
@@ -21,6 +21,7 @@ class CallTreeNode{
             parent = null;
             children = new ArrayList<CallTreeNode>();
             
+            m_totalTime = "n/a";
             level = 0;
     }
     
@@ -43,7 +44,7 @@ class CallTreeNode{
     public String printNode(){
       
       String parentMethod = "null";
-      if (parent.m_method != null){
+      if (parent.m_method != null ){
         parentMethod = parent.m_method;
       }
       
@@ -68,6 +69,7 @@ class CallTreeNode{
 class CallTree{
    
    CallTreeNode root;
+   int totalNodes;
    
    public CallTree(){
      root = new CallTreeNode("root");
@@ -108,6 +110,8 @@ class CallTree{
    //     (c) If it is less, then push everything as a child until the indentation is equal or stack is empty
    public void load(String fileName){
      String lines[] = loadStrings(fileName);
+     // Reset total nodes that exist in the Call Tree
+     totalNodes = 0;
      
      // Walks a call tree file and then 
      Stack<CallTreeNode> walker = new Stack<CallTreeNode>();
@@ -120,6 +124,7 @@ class CallTree{
         //     We also create a node for it.
         String  line = lines[i].substring(1);
         println(line);
+        totalNodes++;
         
         CallTreeNode c = new CallTreeNode(lines[i].substring(1));
         // set the level of the node
@@ -198,8 +203,9 @@ class CallTree{
    
    // Bread-first traversal to recreate the call tree
    // Returns the tree in a linear list.
-   public ArrayList<String> getLinearTree(){
-       ArrayList<String> nodeNames = new ArrayList<String>();
+   // TODO: This should be sorted by time after we get all of the nodes.
+   public ArrayList<CallTreeNode> getLinearTree(){
+       ArrayList<CallTreeNode> nodeNames = new ArrayList<CallTreeNode>();
      
        Queue<CallTreeNode> bfs = new LinkedList<CallTreeNode>();
        bfs.add(root);
@@ -208,7 +214,7 @@ class CallTree{
          CallTreeNode top = bfs.remove();
          // Print out the node we removed
          println(top.level+":"+top.m_method);
-         nodeNames.add(top.m_method);
+         nodeNames.add(top);
          
          // Add all of the children
          for(int i=0; i < top.children.size();++i){
