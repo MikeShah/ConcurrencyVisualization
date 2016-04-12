@@ -15,6 +15,12 @@ class CallTreeNode{
     
     // Child nodes
     ArrayList<CallTreeNode> children;
+    
+    // If set to 0, then do not highlight the nodes in the visualization
+    // If set to 1, then highlight in yellow in the visualization
+    // If set to 2, then highlight in green in the visualization
+    // If set to 3, then highlight in red in the visualization
+    int highlighted = 0;
 
     // Called in the constructor of the tree.
     public void init(){
@@ -44,7 +50,7 @@ class CallTreeNode{
     public String printNode(){
       
       String parentMethod = "null";
-      if (parent.m_method != null ){
+      if(parent!=null && parent.m_method != null ){
         parentMethod = parent.m_method;
       }
       

@@ -24,6 +24,10 @@ public class hilbertCurve extends DataLayer{
     // Which is the last cell that the user clicked on.
     int lastSelectedCell = 0;
     
+    // The cell number we are exploring TODO: Remove this, and just name the cells directly with the function names.
+    //                                        This might however be useful to use as a unique id.
+    int counter= 0;
+    
     
     public hilbertCurve(){
         renderHeight = height;
@@ -46,6 +50,7 @@ public class hilbertCurve extends DataLayer{
     // Resets the hilbert curve to a new value.
     // This clears all data and rebuilds the visualization from scratch
     void regenerate(){
+        counter = 0;
         cells.clear(); // Clear cell information in the data layer.
         c = hilbert(new Vector(renderWidth/2, renderHeight/2, 0) , 300.0,    cp.HilbertCurveValue, 0, 1, 2, 3); // hilbert(center, side-length, recursion depth, start-indices)
     }
@@ -242,21 +247,29 @@ public class hilbertCurve extends DataLayer{
                 dp.dataString.setText(LinearCallTree.get(i).printNode());
               }
               
+              // Highlight all other similar cells of the current cell that has been selected.
+              for(int j =0; j < cells.size();++j){
+                  if(j< LinearCallTree.size() && i < LinearCallTree.size()){
+                      if (LinearCallTree.get(i).m_method.equals(LinearCallTree.get(j).m_method)){
+                          ellipse(cells.get(j).x,cells.get(j).y,15,15);
+                      }
+                  }
+              }
               
-                // Highlight all other similar cells of the current cell that has been selected.
-                for(int j =0; j < cells.size();++j){
-                    if(j< LinearCallTree.size() && i < LinearCallTree.size()){
-                        if (LinearCallTree.get(i).m_method.equals(LinearCallTree.get(j).m_method)){
-                            ellipse(cells.get(j).x,cells.get(j).y,15,15);
-                        }
-                    }
-                }
-              
-              
+              // Simply highlight the nodes in yellow if they have not been selected
+              if(i< LinearCallTree.size()){
+                  if(LinearCallTree.get(i).highlighted != 2){
+                    SetHighlightedCells(i, 1);
+                  }
+              }
               
               // Action to take place on mouse-click | Toggle selection
               if(mousePressed==true){
                 cells.get(i).selected = !cells.get(i).selected;
+                // Select the nodes in green
+                if(i< LinearCallTree.size()){
+                  SetHighlightedCells(i, 2);
+                }
               }
               lastSelectedCell = i;
         }
@@ -272,6 +285,34 @@ public class hilbertCurve extends DataLayer{
           }
         }
    }
+   
+   // Performs a BFS of all cells that are children of the selected cell and highlights them
+   // appropriately
+   // Returns: Returns total nodes in tree.
+   // TODO: Could compute this ahead of time and store the indexes into an array ahead of time.
+   int SetHighlightedCells(int index, int mode){
+       int totalNodes = 0;
+       Queue<CallTreeNode> bfs = new LinkedList<CallTreeNode>();
+
+      for(int i=0; i < LinearCallTree.get(index).children.size(); ++i){
+         bfs.add(LinearCallTree.get(index).children.get(i));
+      }
+      
+       while(!bfs.isEmpty()){
+         // Remove the first node of our queue
+         CallTreeNode top = bfs.remove();
+         totalNodes++;
+         // Change the mode to the one we have selected
+         top.highlighted = mode;
+         
+         // Add all of the children
+         for(int i=0; i < top.children.size();++i){
+           bfs.add(top.children.get(i));
+         }
+       }
+       return totalNodes;
+   }
+
     
 
 // Used to store the points in a Hilbert curve
@@ -284,8 +325,6 @@ class Vector{
     this.z = z;
   }
 }
- 
-int counter= 0;
  
 // Function that draws a hilbert curve by storing all of the points from which to draw lines to and from.
 Vector[] hilbert( Vector c_,  float side,   int iterations,      int index_a, int index_b, int index_c, int index_d ){

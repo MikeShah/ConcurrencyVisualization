@@ -16,6 +16,7 @@ ControlsPanel cp;
 DetailsPane dp;
 hilbertCurve hC;
 FunctionsPanel fp;
+GridVisualization gV;
 
 void settings(){
   size(600,600,P3D);
@@ -34,6 +35,7 @@ void setup() {
   dp = new DetailsPane();
   hC = new hilbertCurve();
   fp = new FunctionsPanel();
+  gV = new GridVisualization();
   
   ArrayList<CallTreeNode> methodList = hC.myCallTree.getLinearTree();
   for(int i =0; i < methodList.size();++i){
