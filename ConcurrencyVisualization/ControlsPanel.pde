@@ -17,7 +17,7 @@ public class ControlsPanel extends PApplet {
       widgets = new ControlP5(this);
 
       // create a new button with name 'buttonA'
-      widgets.addButton("buttonA")
+      widgets.addButton("RegenerateLayout")
          .setValue(0)
          .setPosition(0,0)
          .setSize(200,19)
@@ -57,8 +57,9 @@ public class ControlsPanel extends PApplet {
     }
   }
   
-  void buttonA(){
-    println("test");
+  void RegenerateLayout(){
+    println("regenerating layout");
+    hC.regenerate();
   }
     
 }

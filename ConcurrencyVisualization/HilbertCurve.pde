@@ -40,7 +40,12 @@ public class hilbertCurve extends DataLayer{
         yAnimationOffset = new float[animationLength];
     }
     
-    
+    // Resets the hilbert curve to a new value.
+    // This clears all data and rebuilds the visualization from scratch
+    void regenerate(){
+        cells.clear(); // Clear cell information in the data layer.
+        c = hilbert(new Vector(renderWidth/2, renderHeight/2, 0) , 300.0,    cp.HilbertCurveValue, 0, 1, 2, 3); // hilbert(center, side-length, recursion depth, start-indices)
+    }
 
     // Main render function
     void render(){
@@ -64,11 +69,10 @@ public class hilbertCurve extends DataLayer{
         }
         
         // line animation()
-        lineAnimation();
+        //lineAnimation();
         
         // For an animation
-        movePointOnCurve(1);
-
+        //movePointOnCurve(1);
 
         //println(HilbertPoints);
         // Render the grid of functions
@@ -109,7 +113,7 @@ public class hilbertCurve extends DataLayer{
       }
 
       for(int i =0; i < lastSelectedCell*4; ++i){
-        if(i<c.length){
+        if(i<c.length-1 && c != null){
           stroke(0,0,(float)i*incrementColor); line(c[i].x, c[i].y, c[i+1].x,c[i+1].y);
         }
       }
@@ -160,6 +164,10 @@ public class hilbertCurve extends DataLayer{
     
     // Only draw the cells as they have been positioned in the hilbert curve
     void drawCells(){
+      if(cells==null){
+        return;
+      }
+      
       for(int i =0; i < cells.size(); ++i){
             fill(cells.get(i).getRGB());
             stroke(0);

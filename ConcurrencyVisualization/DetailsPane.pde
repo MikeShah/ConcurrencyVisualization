@@ -8,9 +8,7 @@ public class DetailsPane extends PApplet {
   // Purpose:
   
   //   A special mutable version of a java string.
-  //   It exists within DetailsPane in order to transfer text around.
-   
-  
+  //   It exists within DetailsPane in order to transfer text around.   
   
   class DataString{
     String text;

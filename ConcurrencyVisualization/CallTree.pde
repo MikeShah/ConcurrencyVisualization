@@ -9,12 +9,14 @@ class CallTreeNode{
     String m_totalTime;
     int Invocations;
     CallTreeNode parent;
+    float timeOfMethodEntry;  // This is the time at which the method was called. This is useful for linearizing the nodes in chronological order on the hilbert curve.
     
     int level; // Level the node is at in the tree, such that we can pretty print it
     
     // Child nodes
     ArrayList<CallTreeNode> children;
 
+    // Called in the constructor of the tree.
     public void init(){
             parent = null;
             children = new ArrayList<CallTreeNode>();
@@ -22,6 +24,7 @@ class CallTreeNode{
             level = 0;
     }
     
+    // Default constructor
     public CallTreeNode(){
         init();
     }
@@ -36,8 +39,21 @@ class CallTreeNode{
        children.add(c);
     }
     
-    
-    
+    // Returns a dump of the nodes information.
+    public String printNode(){
+      
+      String parentMethod = "null";
+      if (parent.m_method != null){
+        parentMethod = parent.m_method;
+      }
+      
+      String result = "Method: "+m_method + "\n" +
+                      "Time: "+m_totalTime + "\n" +
+                      "Invocations: "+Invocations + "\n" +
+                      "Parent Method: "+parentMethod + "\n" +
+                      "Time of Entry: "+timeOfMethodEntry;
+      return result;
+    }
 }
 
 /*
@@ -128,8 +144,8 @@ class CallTree{
                   walker.push(c);
                 }
                 else{
-                  while(c.level < walker.peek().level){
-                    //walker.pop();
+                  while(c.level < walker.peek().level && !walker.isEmpty()){
+                    walker.pop();
                   }
                   if(c.level == walker.peek().level){
                     c.parent = walker.peek().parent;
@@ -142,8 +158,19 @@ class CallTree{
                   }
                 }
         }
-     } // for (int i = 0 ; i < lines.length; i++) {
-
+        println(walker.size());
+      } // for (int i = 0 ; i < lines.length; i++) {
+        
+      // Whatever is left on the stack, belongs to the root, so add it as a child
+      
+      while(!walker.isEmpty()){
+        CallTreeNode c = walker.pop();
+        if (c != root && c!=null){
+          root.addChild(c);
+        }
+        println(walker.size());
+      }
+      
      printTree();
      
    }
@@ -151,11 +178,13 @@ class CallTree{
    // Print call Tree
    // Bread-first traversal to recreate the call tree
    public void printTree(){     
+       int counter = 0;  // Counts how many items are in the tree.
        Queue<CallTreeNode> bfs = new LinkedList<CallTreeNode>();
        bfs.add(root);
        while(!bfs.isEmpty()){
          // Remove the first node of our queue
          CallTreeNode top = bfs.remove();
+         counter++;
          // Print out the node we removed
          println(top.level+":"+top.m_method+" children="+top.children.size());         
          // Add all of the children
@@ -164,6 +193,7 @@ class CallTree{
            bfs.add(top.children.get(i));
          }
        }
+       println(counter+" items in tree.");
    }
    
    // Bread-first traversal to recreate the call tree
