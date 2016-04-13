@@ -20,6 +20,9 @@ class Cell{
     float r,g,b;
     // Actual data
     nodeMetaData metaData;
+    // Time Cell is on the curve
+    float time;
+    
     // Selected
     boolean selected = false;
     // Call tree node

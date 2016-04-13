@@ -38,9 +38,7 @@ public class hilbertCurve extends DataLayer{
         myCallTree.load("/Users/michaelshah/Desktop/Snapshots/JVisualVM.csv");
         myCallTree.printTree();
 
-        c = hilbert(new Vector(renderWidth/2, renderHeight/2, 0) , 300.0,    cp.HilbertCurveValue, 0, 1, 2, 3); // hilbert(center, side-length, recursion depth, start-indices)
-
-        mapCellsToTree();
+        regenerate();
 
         curveAnimation = new int[animationLength];
         xAnimationOffset = new float[animationLength];
@@ -53,6 +51,7 @@ public class hilbertCurve extends DataLayer{
         counter = 0;
         cells.clear(); // Clear cell information in the data layer.
         c = hilbert(new Vector(renderWidth/2, renderHeight/2, 0) , 300.0,    cp.HilbertCurveValue, 0, 1, 2, 3); // hilbert(center, side-length, recursion depth, start-indices)
+        mapCellsToTree();
     }
 
     // Main render function
@@ -62,18 +61,20 @@ public class hilbertCurve extends DataLayer{
 
         noStroke(); fill(255, 10);
         rect(0,0, renderWidth, renderHeight);
-        for(int i = 0; i < c.length-1; i++){
-          // Draw the lines of the actual hilbert curve
-          stroke(255); line(c[i].x, c[i].y, c[i+1].x, c[i+1].y);
-          // Plot points along the curve
-          int rectSize = 3; // How big are the points
-          // Compute and figure out where points can be plotted
-          float lineLength = max(abs(c[i].x - c[i+1].x),abs(c[i].y - c[i+1].y));
-//          println("Line Length: "+lineLength);
-          for(int j=0; j < lineLength/rectSize; ++j){
-            stroke(255,0,0);
-            //rect(c[i].x+j*lineLength,c[i].y+j*lineLength,rectSize,rectSize);
-          }
+        if(c!=null){
+            for(int i = 0; i < c.length-1; i++){
+              // Draw the lines of the actual hilbert curve
+              stroke(255); line(c[i].x, c[i].y, c[i+1].x, c[i+1].y);
+              // Plot points along the curve
+              int rectSize = 3; // How big are the points
+              // Compute and figure out where points can be plotted
+              float lineLength = max(abs(c[i].x - c[i+1].x),abs(c[i].y - c[i+1].y));
+    //          println("Line Length: "+lineLength);
+              for(int j=0; j < lineLength/rectSize; ++j){
+                stroke(255,0,0);
+                //rect(c[i].x+j*lineLength,c[i].y+j*lineLength,rectSize,rectSize);
+              }
+            }
         }
         
         // line animation()
@@ -188,10 +189,18 @@ public class hilbertCurve extends DataLayer{
     
     // Important function that maps Cells to the tree
     // Each cell can have exactly one tree node.
+    // TODO: Map a time attribute to the tree
     void mapCellsToTree(){
         
         // Get a linear tree
         LinearCallTree = myCallTree.getLinearTree();
+        
+        // For each cell in the visualization, change its name
+        for (int i =0; i < LinearCallTree.size(); ++i){
+            if(i < cells.size()){
+              cells.get(i).metaData.name = LinearCallTree.get(i).m_method;
+            }
+        }
       
         /*
         for(int i = 0; i < LinearCallTree.size(); ++i){
@@ -231,6 +240,21 @@ public class hilbertCurve extends DataLayer{
  
    // Detect if we moused over a cell.
    void mouseOver(){
+     // Do nothing if cells is not yet initialized.
+     if(cells==null){
+       return;
+     }
+     
+     // Reset all nodes that have been not been seelcted to 0 which unhighlights them.
+      for(int i =0; i < cells.size(); ++i){
+              if(i< LinearCallTree.size()){
+                  if(LinearCallTree.get(i).highlighted != 2){
+                    LinearCallTree.get(i).highlighted = 0;
+                  }
+              }
+      }
+     
+     
       for(int i =0; i < cells.size();i++){
         
         float yTextOffset = 20; // Need to subtract text from y
@@ -289,6 +313,7 @@ public class hilbertCurve extends DataLayer{
    // Performs a BFS of all cells that are children of the selected cell and highlights them
    // appropriately
    // Returns: Returns total nodes in tree.
+   //          
    // TODO: Could compute this ahead of time and store the indexes into an array ahead of time.
    int SetHighlightedCells(int index, int mode){
        int totalNodes = 0;
@@ -314,6 +339,17 @@ public class hilbertCurve extends DataLayer{
    }
 
     
+// Class that acts as a PODS (Piece of Data Structure)
+// To return interesting information about a graph traversal
+class graphStats{
+  
+  int deepestLevel;
+  int widestLevel;
+  
+  public graphStats(){
+  
+  }
+}
 
 // Used to store the points in a Hilbert curve
 // and make a vector
@@ -350,7 +386,7 @@ Vector[] hilbert( Vector c_,  float side,   int iterations,      int index_a, in
    _cell.setXYZ(c_.x - side/2,   c_.y - side/2, 0);
    _cell.setWHD(4,4,4);
   //             c.setRGB(random(255),random(255),random(255));
-   _cell.setRGB(255,0,0);
+   _cell.setRGB(random(255),random(255),random(255));
    addcell(_cell);
              
   return c;
